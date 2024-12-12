@@ -1,0 +1,152 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  header {
+    background-color: #008cff; /* Simple green background */
+    color: white; /* White text */
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  header .welcome-message {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  header .auth-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  header button {
+    background-color: #fff;
+    color: #ff0022; 
+    border: 2px solid #ff0022; 
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  header button:hover {
+    background-color: #008cff; /* Darker blue when hovered */
+    color: white;
+  }
+  
+  .container {
+    max-width: 900px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+  }
+  
+  .cta {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 20px;
+  }
+  
+  .cta a {
+    color: #008cff;
+    text-decoration: none;
+  }
+  
+  .cta a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Forms and buttons */
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .form-group {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  input,
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+  }
+  
+  button {
+    background-color: #008cff; /* Blue background for buttons */
+    color: white;
+    cursor: pointer;
+    border: none;
+    margin-top: 20px;
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  @media (max-width: 600px) {
+    .container {
+      margin: 20px;
+      padding: 15px;
+    }
+  
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    header .auth-buttons {
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    header button {
+      margin-top: 5px;
+      width: 100%;
+    }
+  
+    .cta a {
+      font-size: 13px;
+    }
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+    line-height: 1.5;
+  }
