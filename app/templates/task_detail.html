@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Detail - Task Management System</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- Header Section -->
+    <header style="background-color: #003366; color: white; padding: 10px 20px;">
+      <div class="welcome-message">
+        {% if user.is_authenticated %}
+          Welcome to "{{ user.first_name }} {{ user.last_name }}" Task Management System
+        {% else %}
+          Welcome to the Task Management System
+        {% endif %}
+      </div>
+      <div class="auth-buttons" style="display: flex; gap: 10px;">
+        {% if user.is_authenticated %}
+          <button onclick="window.location.href='{% url 'userlist' %}'">Users List</button>
+          <button onclick="window.location.href='{% url 'createtask' %}'">Add Task</button>
+          <button onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+        {% else %}
+          <button onclick="window.location.href='{% url 'signup' %}'">Signup</button>
+          <button onclick="window.location.href='{% url 'login' %}'">Login</button>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="container my-5">
+      <h1 class="text-center mb-4">{{ task.title }}</h1>
+
+      <!-- Task Details Section -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Task Detail</h5>
+          <p class="card-text">{{ task.detail }}</p>
+
+          <h5 class="card-title">Assigned To</h5>
+          <p class="card-text">{{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}</p>
+
+          <h5 class="card-title">Assigned By</h5>
+          <p class="card-text">{{ task.assigned_by.first_name }} {{ task.assigned_by.last_name }}</p>
+
+          <h5 class="card-title">Status</h5>
+          <p class="card-text">{{ task.status }}</p>
+
+          <h5 class="card-title">Priority</h5>
+          <p class="card-text">{{ task.get_priority_display }}</p>
+
+          <h5 class="card-title">Due Date</h5>
+          <p class="card-text">{{ task.due_date }}</p>
+        </div>
+      </div>
+
+      <!-- Comments Section -->
+      <div class="comments mb-4">
+        <h5>Comments</h5>
+        <div class="list-group">
+          {% for text in comments %}
+            <div class="list-group-item">
+              <strong>{{ text.user.first_name }} {{ text.user.last_name }}</strong>
+              <small class="text-muted">({{ text.created_at|date:'F j, Y, g:i a' }})</small>
+              <p>{{ text.text }}</p>
+            </div>
+          {% empty %}
+            <p class="text-muted">No comments yet. Be the first to comment!</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Add a Comment -->
+      {% if user.is_authenticated %}
+        <form method="POST" class="mt-4">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="id_text" class="form-label">Your Comment</label>
+            <textarea name="text" id="id_text" class="form-control" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+      {% else %}
+        <p class="text-muted">You must be logged in to add a comment.</p>
+      {% endif %}
+
+      <div class="cta mt-4">
+        <a href="{% url 'listsoftask' %}" class="btn btn-secondary">Back to Task List</a>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
