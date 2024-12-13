@@ -1,22 +1,14 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
+from model_utils.models import TimeStampedModel
 
 # Create your models here.
-
-
-class TimesStampedModel(models.Model):
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-
-    class Meta:
-        abstract = True
-
 
 # User
 
 
-class User(AbstractUser, TimesStampedModel):
+class User(AbstractUser, TimeStampedModel):
     id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
 
@@ -30,7 +22,7 @@ class User(AbstractUser, TimesStampedModel):
 # Task
 
 
-class Task(TimesStampedModel):
+class Task(TimeStampedModel):
     STATUS = [
         ("Complete", "Complete"),
         ("Inprogress", "Inprogress"),
@@ -64,7 +56,7 @@ class Task(TimesStampedModel):
 # Comment
 
 
-class Comment(TimesStampedModel):
+class Comment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     text = models.TextField()
     task = models.ForeignKey(
