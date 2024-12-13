@@ -1,11 +1,10 @@
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, View
 
-from .forms import CommentForm, LoginForm, SignUpForm, TaskForm
+from .email_utils import send_task_assigned_email, send_task_update_email
+from .forms import CommentForm, LoginForm, SignUpForm, TaskForm, TaskStatusForm
 from .models import Comment, Task, User
 
 
@@ -82,17 +81,9 @@ class CreateTaskView(TemplateView):
             task.assigned_by = request.user
             task.save()
 
-            # Send Mail
-            assigned_to = task.assigned_to
-            subject = f"New Task Assigned: {task.title}"
-            message = f"You have been assigned a new task: {task.title}\nDetail: {task.detail}\nPriority: {task.get_priority_display()}\nDue_Date: {task.due_date}"
-            send_mail(
-                subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                [assigned_to.email],
-                fail_silently=False,
-            )
+            # Send mail using the utility function
+            send_task_assigned_email(task.assigned_to, task)
+
             return redirect("listsoftask")
         else:
             return render(request, self.template_name, {"form": form})
@@ -118,8 +109,9 @@ class UpdateTaskView(TemplateView):
             "task": task,
         }
         if form.is_valid():
-            form.save()
-            messages.success(request, "Task updated successfully.")
+            task_update = form.save()
+            if task_update.assigned_to:
+                send_task_update_email(task_update)
             return redirect("listsoftask")
         return render(request, self.template_name, context=context)
 
@@ -198,3 +190,24 @@ class UserListView(TemplateView):
         user = User.objects.all()
         context = {"user": user}
         return render(request, self.template_name, context=context)
+
+
+class TaskStatusUpdateView(TemplateView):
+    template_name = "status_update.html"
+
+    def get(self, request, pk):
+        task = Task.objects.filter(id=pk).first()
+        form = TaskStatusForm(instance=task)
+        return render(
+            request, self.template_name, {"form": form, "task": task}
+        )
+
+    def post(self, request, pk):
+        task = Task.objects.filter(id=pk).first()
+        form = TaskStatusForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect("listsoftask")
+        return render(
+            request, self.template_name, {"form": form, "task": task}
+        )
