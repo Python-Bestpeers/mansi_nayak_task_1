@@ -104,13 +104,13 @@
                         <td>{{ task.due_date }}</td>
                         <td>
                             <a href="{% url 'detailtask' task.id %}" class="btn btn-warning btn-sm">View</a>
-                            
+
                             {% if user == task.assigned_by %}
                                 <a href="{% url 'editask' task.id %}" class="btn btn-primary btn-sm">Edit</a>
                                 <a href="{% url 'deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
 
                             {% endif %}
-                            
+
                             {% comment %} <a href="{% url 'deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
                         </td>
                     </tr>
@@ -128,4 +128,3 @@
 </body>
 
 </html>
-
