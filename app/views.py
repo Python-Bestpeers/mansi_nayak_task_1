@@ -1,12 +1,12 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, View
 
-from .forms import LoginForm, SignUpForm, TaskForm, CommentForm
-from .models import Task, User, Comment
-from django.core.mail import send_mail
-from django.conf import settings
+from .forms import CommentForm, LoginForm, SignUpForm, TaskForm
+from .models import Comment, Task, User
 
 
 class Home(TemplateView):
