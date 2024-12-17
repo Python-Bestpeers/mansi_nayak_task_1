@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Task{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Create and Assign Task</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="title">Task Title</label>
+                <input type="text" name="title" id="title" value="{{ form.title.value }}" placeholder="Enter task title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="detail">Task Detail</label>
+                <textarea name="detail" id="detail" placeholder="Enter task detail" rows="4" required>{{ form.detail.value }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="assigned_to">Assigned to</label>
+                <select name="assigned_to" id="assigned_to" required>
+                    <option value="" disabled selected>Select User</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}" {% if form.assigned_to.value == user.id %} selected {% endif %}>{{ user.first_name }} {{ user.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+             <div class="form-group">
+                <label for="status">Status</label>
+                <select name="status" id="status" required>
+                    {% comment %} <option value="Complete" {% if form.status.value == 'Complete' %} selected {% endif %}>Completed</option> {% endcomment %}
+                    <option value="Inprogress" {% if form.status.value == 'Inprogress' %} selected {% endif %}>In Progress</option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <select name="priority" id="priority" required>
+                    <option value="Major" {% if form.priority.value == 'Major' %} selected {% endif %}>Major</option>
+                    <option value="Intermediate" {% if form.priority.value == 'Intermediate' %} selected {% endif %}>Intermediate</option>
+                    <option value="Minor" {% if form.priority.value == 'Minor' %} selected {% endif %}>Minor</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="due_date">Due Date</label>
+                <input type="date" name="due_date" id="due_date" value="{{ form.due_date.value }}" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Create and Assign Task</button>
+            </div>
+        </form>
+
+        <div class="cta">
+            <p><a href="{% url 'listsoftask' %}">View all tasks</a></p>
+        </div>
+    </div>
+{% endblock %}
