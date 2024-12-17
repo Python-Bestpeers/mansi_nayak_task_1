@@ -19,8 +19,8 @@
       </div>
       <div class="auth-buttons">
         {% if user.is_authenticated %}
-          <button onclick="window.location.href='{% url 'userlist' %}'">Users List</button>
-          <button onclick="window.location.href='{% url 'createtask' %}'">Add Task</button>
+          <button onclick="window.location.href='{% url 'user_list' %}'">Users List</button>
+          <button onclick="window.location.href='{% url 'create_task' %}'">Add Task</button>
           <button onclick="window.location.href='{% url 'logout' %}'">Logout</button>
         {% else %}
           <button onclick="window.location.href='{% url 'signup' %}'">Signup</button>

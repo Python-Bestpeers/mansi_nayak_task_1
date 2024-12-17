@@ -39,8 +39,8 @@
           </div>
           <div class="auth-buttons">
             {% if user.is_authenticated %}
-              <button onclick="window.location.href='{% url 'userlist' %}'">Users List</button>
-              <button onclick="window.location.href='{% url 'createtask' %}'">Add Task</button>
+              <button onclick="window.location.href='{% url 'user_list' %}'">Users List</button>
+              <button onclick="window.location.href='{% url 'create_task' %}'">Add Task</button>
               <button onclick="window.location.href='{% url 'logout' %}'">Logout</button>
             {% comment %} {% else %}
               <button onclick="window.location.href='{% url 'signup' %}'">Signup</button>
@@ -83,7 +83,7 @@
     </div>
 
     <div class="auth-buttons header-buttons" style="display: flex; gap: 10px;">
-        <a href="{% url 'listsoftask' %}" class="btn btn-primary">Back to Task List</a>
+        <a href="{% url 'task_list' %}" class="btn btn-primary">Back to Task List</a>
     </div>
 
     <!-- Optional: Add Bootstrap JS for additional functionality -->
