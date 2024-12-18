@@ -11,6 +11,7 @@ from .views import (
     LogoutView,
     SignUpView,
     TaskListView,
+    TaskReportView,
     TaskStatusUpdateView,
     UpdateTaskView,
     UserListView,
@@ -42,6 +43,7 @@ urlpatterns = [
         TaskStatusUpdateView.as_view(),
         name="status_update",
     ),
+    path("taskreport/", TaskReportView.as_view(), name="task_report"),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
