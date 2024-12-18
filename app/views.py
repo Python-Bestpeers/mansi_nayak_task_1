@@ -1,5 +1,8 @@
+import csv
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, View
 
@@ -135,9 +138,15 @@ class UpdateTaskView(TemplateView):
         """
         Render the task update form with existing task data.
         """
-        task = Task.objects.filter(id=pk).first()
-        form = TaskForm(instance=task)
-        return render(request, self.template_name, {"form": form})
+        user_id = request.user.id
+
+        task = Task.objects.filter(id=pk, assigned_by=user_id).first()
+        if task:
+
+            form = TaskForm(instance=task)
+            return render(request, self.template_name, {"form": form})
+        else:
+            return redirect("task_list")
 
     def post(self, request, pk):
         """
@@ -265,11 +274,16 @@ class TaskStatusUpdateView(TemplateView):
         """
         Render the task status update form.
         """
-        task = Task.objects.filter(id=pk).first()
-        form = TaskStatusForm(instance=task)
-        return render(
-            request, self.template_name, {"form": form, "task": task}
-        )
+        user_id = request.user.id
+
+        task = Task.objects.filter(id=pk, assigned_to=user_id).first()
+        if task:
+            form = TaskStatusForm(instance=task)
+            return render(
+                request, self.template_name, {"form": form, "task": task}
+            )
+        else:
+            return redirect("task_list")
 
     def post(self, request, pk):
         """
@@ -283,3 +297,92 @@ class TaskStatusUpdateView(TemplateView):
         return render(
             request, self.template_name, {"form": form, "task": task}
         )
+
+
+class TaskReportView(TemplateView):
+    template_name = "task_report.html"
+
+    def get(self, request):
+        """
+        Display tasks based on status and priority filters.
+        """
+        status_filter = request.GET.get("status", "")
+        priority_filter = request.GET.get("priority", "")
+        due_date = request.GET.get("due_date", "")
+        created = request.GET.get("created", "")
+
+        tasks = Task.objects.all()
+
+        if status_filter:
+            tasks = tasks.filter(status=status_filter)
+        if priority_filter:
+            tasks = tasks.filter(priority=priority_filter)
+        if due_date:
+            tasks = tasks.filter(due_date=due_date)
+        if created:
+            tasks = tasks.filter(created=created)
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "tasks": tasks,
+                "status_filter": status_filter,
+                "priority_filter": priority_filter,
+                "due_date": due_date,
+                "created": created,
+            },
+        )
+
+    def post(self, request):
+        """
+        Export filtered tasks to CSV if assigned to/by the user.
+        """
+        status_filter = request.POST.get("status", "")
+        priority_filter = request.POST.get("priority", "")
+        due_date = request.GET.get("due_date", "")
+        created = request.GET.get("created", "")
+        tasks = Task.objects.filter()
+
+        if status_filter:
+            tasks = tasks.filter(status=status_filter)
+        if priority_filter:
+            tasks = tasks.filter(priority=priority_filter)
+        if due_date:
+            tasks = tasks.filter(due_date=due_date)
+        if created:
+            tasks = tasks.filter(created=created)
+
+        # Generate CSV
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = (
+            'attachment; filename="filtered_tasks.csv"'
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(
+            [
+                "Title",
+                "Due Date",
+                "Created At",
+                "Status",
+                "Priority",
+                "Assigned By",
+                "Assigned To",
+            ]
+        )
+
+        for task in tasks:
+            writer.writerow(
+                [
+                    task.title,
+                    task.due_date,
+                    task.created,
+                    task.status,
+                    task.priority,
+                    task.assigned_by.email,
+                    task.assigned_to.email,
+                ]
+            )
+
+        return response
